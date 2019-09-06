@@ -112,10 +112,6 @@ class Coordinator(override val rpcEnv: RpcEnv) extends RpcEndpoint {
 
     if (count == hosts.size()) {
       // commit session success to database using RPC
-      val rpcConf = new RpcConf()
-      val config = RpcEnvClientConfig(rpcConf, "hello-server-again")
-      val rpcEnv: RpcEnv = NettyRpcEnvFactory.create(config)
-
       val cFutureArray = ArrayBuffer[Future[String]]()
 
       for (i <- 0.until(hosts.size())) {
@@ -137,10 +133,6 @@ class Coordinator(override val rpcEnv: RpcEnv) extends RpcEndpoint {
     }
     else {
       //commit session failed to database using RPC
-      val rpcConf = new RpcConf()
-      val config = RpcEnvClientConfig(rpcConf, "hello-server-again")
-      val rpcEnv: RpcEnv = NettyRpcEnvFactory.create(config)
-
       var fFutureArray = ArrayBuffer[Future[String]]()
 
       for (i <- 0.until(hosts.size())) {
