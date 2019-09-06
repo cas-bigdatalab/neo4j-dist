@@ -1,6 +1,6 @@
 # Neo4jDB HA Implementation
 This project is trying to implement HA on Neo4j community.</br> 
-You can start 3 computers(cluster) in your VMware Workstation, and use your computer to send RPC requests to the cluster.
+You can start a 3-node neo4j cluster, and use our client and coordinators to send RPC requests to the cluster.
 - - -
 # 1. Requirement
 1. Java Version 1.8
