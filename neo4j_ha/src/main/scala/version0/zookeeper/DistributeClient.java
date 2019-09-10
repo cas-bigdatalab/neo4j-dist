@@ -1,24 +1,35 @@
 package version0.zookeeper;
 
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
-import scala.collection.LinearSeq;
-import scala.collection.mutable.ArrayBuffer;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class DistributeClient {
     private static String connectString = "192.168.49.10:2181,192.168.49.11:2181,192.168.49.12:2181";
-    private static int sessionTimeout = 3000;
+    private static int sessionTimeout = 2000;
     private ZooKeeper zk = null;
     private String parentNode = "/servers";
 
-    public void getConnect() throws IOException {
-        zk = new ZooKeeper(connectString, sessionTimeout, event -> {
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        });
+    public void getConnect() throws IOException {
+        try{
+            zk = new ZooKeeper(connectString, sessionTimeout, event -> {
+                if(event.getState()== Watcher.Event.KeeperState.SyncConnected){
+                    countDownLatch.countDown();
+                }
+            });
+            countDownLatch.await();
+            System.out.println("zookeeper connection success");
+        }catch(Exception e){
+            System.out.println("getConnect..." + e.getMessage());
+        }
     }
 
     public ArrayList<String> getChildren() throws KeeperException, InterruptedException {
