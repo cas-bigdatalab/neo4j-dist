@@ -6,7 +6,7 @@ This project is trying to implement HA on Neo4j community.</br>
 2. Scala Version **MUST BE** 2.11.0
 - - -
 # 2. How to run
-1. Set your neo4j database's account and password an set your Zookeeper connectString and sessionTimeout In "MySettings.scala".
+1. Set your neo4j database's account and password and set your Zookeeper connectString and sessionTimeout In "MySettings.scala".
 2. Start your Neo4j server in every node.
 3. Start your Zookeeper server in every node.
 
