@@ -10,15 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public class DistributeClient {
-    private static String connectString = "192.168.49.10:2181,192.168.49.11:2181,192.168.49.12:2181";
-    private static int sessionTimeout = 2000;
+public class ZkClient {
+    private  String connectString;
+    private  int sessionTimeout;
+
     private ZooKeeper zk = null;
     private String parentNode = "/servers";
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    public void getConnect() throws IOException {
+    public ZkClient(String connectString, int sessionTimeout) {
+        this.connectString = connectString;
+        this.sessionTimeout = sessionTimeout;
+    }
+
+    public void getConnect(){
         try{
             zk = new ZooKeeper(connectString, sessionTimeout, event -> {
                 if(event.getState()== Watcher.Event.KeeperState.SyncConnected){

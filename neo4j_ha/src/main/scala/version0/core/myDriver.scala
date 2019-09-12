@@ -1,4 +1,4 @@
-package version0
+package version0.core
 
 import net.neoremind.kraps.rpc.RpcCallContext
 import org.neo4j.driver.v1._
@@ -14,18 +14,16 @@ class myDriver(url: String, user: String, password: String) {
     "success"
   }
 
-  def driverSuccess(context: RpcCallContext): Unit ={
+  def driverSuccess(): Unit ={
     tx.success()
     tx.close()
     driver.close()
-    context.reply("Commit Success")
   }
 
-  def driverFailed(context: RpcCallContext): Unit ={
+  def driverFailed(): Unit ={
     tx.failure()
     tx.close()
     driver.close()
-    context.reply("Commit Failed")
   }
 
   def userReadCypher(cypher_str:String, context: RpcCallContext): Unit = {

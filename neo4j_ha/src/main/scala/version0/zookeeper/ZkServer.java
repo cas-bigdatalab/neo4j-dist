@@ -1,58 +1,65 @@
 package version0.zookeeper;
 
 import org.apache.zookeeper.*;
+import version0.setting.MySettings;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.CountDownLatch;
 
-public class DistributeServer{
+public class ZkServer {
     // your zookeeper connection string
-    private static String connectString = "192.168.49.10:2181,192.168.49.11:2181,192.168.49.12:2181";
+    private String connectString;
+    private int sessionTimeout;
 
-    private static int sessionTimeout = 10000;
     private ZooKeeper zk = null;
     private String parentNode = "/servers";
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
+    public ZkServer(String connectString, int sessionTimeout) {
+        this.connectString = connectString;
+        this.sessionTimeout = sessionTimeout;
+    }
 
     // create zk
-    public void getConnect() throws IOException {
+    public void getConnect(){
         try {
             zk = new ZooKeeper(connectString, sessionTimeout, event -> {
-                if(event.getState()== Watcher.Event.KeeperState.SyncConnected){
+                if (event.getState() == Watcher.Event.KeeperState.SyncConnected) {
                     countDownLatch.countDown();
                 }
             });
             countDownLatch.await();
             System.out.println("zookeeper connection success");
         }catch (Exception e){
-            System.out.println("getConnect..." + e.getMessage());
+            System.out.println("on getConnection error: " + e.getMessage());
         }
     }
 
+
     // register server
-    public void registerServer(String hostname) throws Exception{
+    public void registerServer(String hostname) throws Exception {
         try {
-            if (zk.exists(parentNode, false) == null){
+            if (zk.exists(parentNode, false) == null) {
                 zk.create(parentNode, "servers".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
             String create = zk.create(parentNode + "/server", hostname.getBytes(),
                     ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-            System.out.println(hostname +" is online "+ create);
+            System.out.println(hostname + " is online " + create);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("registerServer..." + e.getMessage());
         }
     }
 
     // make sure this node is online
-    public void business() throws Exception{
+    public void business() throws Exception {
         Thread.sleep(Long.MAX_VALUE);
     }
 
     public static void main(String[] args) throws Exception {
-        DistributeServer server = new DistributeServer();
+        MySettings settings = new MySettings();
+        ZkServer server = new ZkServer(settings.connectString(),settings.sessionTimeout());
         server.getConnect();
         server.registerServer(InetAddress.getLocalHost().getHostAddress());
         server.business();
