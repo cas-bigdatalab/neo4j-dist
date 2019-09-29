@@ -13,4 +13,4 @@ This project is trying to implement HA on Neo4j community.</br>
 4. run the "ZkServer.java" in every node.
 5. run the "Coordinator.scala" in every node.
 
-Then you can run "RpcClient.scala" choose 'WriteCypher' or 'ReadCypher' (in line 36) to send your Cypher statement to cluster, and see the result from RpcClient console and cluster's http://localhost:7474/browser/.
+Then you can watch main/scala/test's 2 file, change 'client.scala' line24's code  to ReadCypher/WriteCypher and change 'RunClient.scala' according to your needs. and see the result from RpcClient console and cluster's http://localhost:7474/browser/.
