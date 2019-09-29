@@ -1,4 +1,4 @@
-package version0.setting
+package version1.setting
 
 class MySettings {
   // Connect to your neo4j database
@@ -9,4 +9,5 @@ class MySettings {
   val connectString = "192.168.49.10:2181,192.168.49.11:2181,192.168.49.12:2181"
   val sessionTimeout = 2000
 
+  val serviceNumber = 3
 }

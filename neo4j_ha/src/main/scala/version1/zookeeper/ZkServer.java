@@ -1,9 +1,8 @@
-package version0.zookeeper;
+package version1.zookeeper;
 
 import org.apache.zookeeper.*;
-import version0.setting.MySettings;
+import version1.setting.MySettings;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.CountDownLatch;
 
@@ -28,6 +27,10 @@ public class ZkServer {
                 if (event.getState() == Watcher.Event.KeeperState.SyncConnected) {
                     countDownLatch.countDown();
                 }
+//                if node down, reconnect all nodes
+                if (event.getType() == Watcher.Event.EventType.NodeChildrenChanged){
+                    registerServer();
+                }
             });
             countDownLatch.await();
             System.out.println("zookeeper connection success");
@@ -36,19 +39,18 @@ public class ZkServer {
         }
     }
 
-
     // register server
-    public void registerServer(String hostname) throws Exception {
+    public void registerServer(){
         try {
+            String hostname = InetAddress.getLocalHost().getHostAddress();
             if (zk.exists(parentNode, false) == null) {
                 zk.create(parentNode, "servers".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             }
             String create = zk.create(parentNode + "/server", hostname.getBytes(),
-                    ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+                    ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL);
             System.out.println(hostname + " is online " + create);
-
-        } catch (Exception e) {
-            System.out.println("registerServer..." + e.getMessage());
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -61,7 +63,7 @@ public class ZkServer {
         MySettings settings = new MySettings();
         ZkServer server = new ZkServer(settings.connectString(),settings.sessionTimeout());
         server.getConnect();
-        server.registerServer(InetAddress.getLocalHost().getHostAddress());
+        server.registerServer();
         server.business();
     }
 }
