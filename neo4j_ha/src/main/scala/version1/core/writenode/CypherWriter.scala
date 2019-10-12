@@ -1,6 +1,4 @@
-package version1.core
-
-import java.util.concurrent.atomic.AtomicInteger
+package main.scala.version1.core.writenode
 
 import net.neoremind.kraps.rpc.RpcCallContext
 import org.neo4j.driver.v1.{Driver, Transaction}

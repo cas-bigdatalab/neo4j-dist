@@ -1,4 +1,4 @@
-package version1.zookeeper;
+package main.scala.version1.zookeeper;
 
 import org.apache.zookeeper.*;
 import version1.setting.MySettings;
